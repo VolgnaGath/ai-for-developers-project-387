@@ -1,0 +1,19 @@
+# Vite
+frontend/dist/
+frontend/node_modules/
+
+# TypeScript incremental build info
+frontend/node_modules/.tmp/
+
+# Playwright
+playwright-report/
+test-results/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Env
+.env
+.env.local
+.env.*.local

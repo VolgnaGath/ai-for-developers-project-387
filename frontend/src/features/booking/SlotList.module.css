@@ -1,0 +1,11 @@
+.root {
+  min-height: 0;
+}
+
+.empty {
+  padding: var(--mantine-spacing-md) 0;
+}
+
+.slotButton {
+  font-variant-numeric: tabular-nums;
+}

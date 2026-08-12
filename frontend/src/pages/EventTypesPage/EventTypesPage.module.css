@@ -1,0 +1,30 @@
+.card {
+  transition:
+    border-color 150ms ease,
+    transform 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.card:hover {
+  border-color: var(--mantine-color-orange-5);
+  transform: translateY(-1px);
+  box-shadow: var(--mantine-shadow-sm);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--mantine-color-orange-6);
+  outline-offset: 2px;
+}
+
+.description {
+  max-width: 560px;
+}
+
+.chevron {
+  display: inline-flex;
+  color: var(--mantine-color-dimmed);
+}
+
+.alert {
+  max-width: 640px;
+}

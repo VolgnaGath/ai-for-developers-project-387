@@ -1,0 +1,33 @@
+{
+  "name": "@call-calendar/backend",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "generate": "openapi-code-generator --input ../tsp-output/schema/openapi.yaml --input-type openapi3 --output ./src/generated --template typescript-express --schema-builder zod-v4",
+    "start": "node src/server.ts",
+    "build": "tsc -b",
+    "typecheck": "tsc -b --pretty false",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@js-temporal/polyfill": "^0.5.1",
+    "@nahkies/typescript-express-runtime": "^0.26.0",
+    "cors": "^2.8.5",
+    "express": "^5.2.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@nahkies/openapi-code-generator": "^0.26.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^24.13.3",
+    "@types/supertest": "^7.2.1",
+    "supertest": "^7.2.2",
+    "typescript": "~5.9.3",
+    "vitest": "^4.1.10"
+  }
+}

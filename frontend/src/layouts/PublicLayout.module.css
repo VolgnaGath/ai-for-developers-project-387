@@ -1,0 +1,22 @@
+.root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--mantine-color-body);
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: 60px;
+  background: var(--mantine-color-body);
+  border-bottom: 1px solid var(--mantine-color-default-border);
+}
+
+.headerInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+}

@@ -1,0 +1,32 @@
+{
+  "name": "call-calendar",
+  "version": "0.3.0",
+  "type": "module",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "dependencies": {
+    "@typespec/compiler": "^1.14.0",
+    "@typespec/http": "^1.14.0",
+    "@typespec/openapi": "^1.14.0",
+    "@typespec/openapi3": "^1.14.0"
+  },
+  "scripts": {
+    "generate": "tsp compile .",
+    "check": "tsp compile --no-emit .",
+    "check:generated": "npm run generate && npm run generate --workspace backend && npm run codegen --workspace frontend && git diff --exit-code",
+    "dev": "npm run dev --workspace frontend",
+    "api:mock": "prism mock tsp-output/schema/openapi.yaml -p 4010",
+    "build": "npm run build --workspace frontend && npm run build --workspace backend",
+    "typecheck": "npm run typecheck --workspace frontend && npm run typecheck --workspace backend",
+    "test": "npm run test --workspace frontend && npm run test --workspace backend",
+    "e2e": "npm run e2e --workspace frontend",
+    "e2e:smoke": "npm run e2e:smoke --workspace frontend"
+  },
+  "packageManager": "npm@12.0.2+sha512.b885e890b9418fa1693544d05f53e64f9a73ec194837d4258b15fecdd692347b1dd2a517b1b0cbaf9d31cd8e92c3b70956bd2ecc72833a57b4b3098f5bfa7943",
+  "devDependencies": {
+    "@stoplight/prism-cli": "^5.14.2"
+  }
+}

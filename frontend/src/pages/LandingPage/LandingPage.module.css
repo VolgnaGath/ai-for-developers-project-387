@@ -1,0 +1,29 @@
+.root {
+  flex: 1;
+  background: linear-gradient(135deg, #dbeafe 0%, #fff7ed 55%, #fecaca 100%);
+}
+
+.inner {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .inner {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+}
+
+.title {
+  max-width: 640px;
+  margin: 0 auto;
+  font-size: clamp(1.75rem, 5vw, 3rem);
+  line-height: 1.15;
+}
+
+.subtitle {
+  max-width: 480px;
+  margin: 0 auto;
+}

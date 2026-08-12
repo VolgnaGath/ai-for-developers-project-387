@@ -1,0 +1,22 @@
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--mantine-color-text);
+}
+
+.mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--mantine-radius-md);
+  color: var(--mantine-color-white);
+  background: linear-gradient(135deg, var(--mantine-color-blue-5), var(--mantine-color-orange-5));
+}
+
+.label {
+  white-space: nowrap;
+}

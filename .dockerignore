@@ -1,0 +1,14 @@
+.git
+.github
+.gitignore
+.opencode
+docs
+node_modules
+**/node_modules
+**/dist
+*.tsbuildinfo
+*.md
+tsp-output
+CHANGELOG.md
+release-please-config.json
+.release-please-manifest.json

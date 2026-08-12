@@ -1,0 +1,57 @@
+.navButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--mantine-radius-sm);
+  color: var(--mantine-color-dimmed);
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+.navButton:hover:not(:disabled) {
+  background-color: var(--mantine-color-gray-1);
+  color: var(--mantine-color-dark-6);
+}
+
+.navButton:focus-visible {
+  outline: 2px solid var(--mantine-color-orange-6);
+  outline-offset: 2px;
+}
+
+.navButton:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.monthLabel {
+  min-width: 0;
+}
+
+.day {
+  position: relative;
+}
+
+.dayContent {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dot {
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background-color: var(--mantine-color-orange-6);
+}
+
+.day.today {
+  box-shadow: inset 0 0 0 1.5px var(--mantine-color-orange-6);
+}
