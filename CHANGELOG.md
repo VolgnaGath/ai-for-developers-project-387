@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/VolgnaGath/ai-for-developers-project-387/compare/call-calendar-v0.3.0...call-calendar-v0.4.0) (2026-08-12)
+
+
+### Features
+
+* import project from ai-for-developers-project-386 ([5de23c0](https://github.com/VolgnaGath/ai-for-developers-project-387/commit/5de23c0bb1d670a964fcaa3fa90c9ce44fee4f32))
+
 ## [0.3.0](https://github.com/VolgnaGath/ai-for-developers-project-386/compare/call-calendar-v0.2.0...call-calendar-v0.3.0) (2026-08-11)
 
 
