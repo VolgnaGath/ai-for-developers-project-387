@@ -50,3 +50,14 @@ Call Calendar — бронирование звонков: владелец пу
 - Тело — по желанию: что и почему менялось, ссылки на PR/issue.
 - Примеры: `feat: add guest booking form`, `fix: return 409 on double booking`, `test: cover slot conflicts`, `ci: add release-please`, `docs: describe user scenarios`.
 - Релиз-PR открывает только коммит `feat`, `fix` или `deps`; для 0.x действует bump-minor-pre-major: `feat` → минорная версия, `fix` → патч. `docs`, `test`, `ci`, `chore`, `refactor` релиз не триггерят, но попадают в changelog при ближайшем релизе, вызванном другим коммитом.
+
+## Работа в GitHub Actions
+
+Запуски агента в GitHub Actions: интерактив по `/oc`-комментариям (`opencode.yml`), автотриаж новых issues (`opencode-triage.yml`), ночная проверка Lighthouse (`opencode-lighthouse.yml`).
+
+- Перед любыми правками читай `CONTEXT.md`.
+- Коммиты — Conventional Commits (см. «Коммиты»), ветки — `opencode/…`.
+- Проверка в runner: `npm run typecheck` и `npm test`; e2e/smoke после открытия PR гоняет `ci.yml` — в runner их не запускай.
+- В описании PR указывай связь с issue (`Closes #N`).
+- **Запрет**: не редактируй `.github/workflows/` (включая opencode-воркфлоу) — если видишь в них проблему, отчитайся комментарием, а не чини.
+- `OPENCODE_PERMISSION` не ограничен: bash нужен для `npm ci`/`npm test`.
