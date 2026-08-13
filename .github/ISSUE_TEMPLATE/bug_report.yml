@@ -1,0 +1,39 @@
+name: Bug report
+description: Сообщить об ошибке в Call Calendar
+title: "bug: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Описание
+      description: Что происходит и почему это баг
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Шаги воспроизведения
+      description: Пошаговый сценарий, начиная с чистой страницы
+      placeholder: |
+        1. Откройте ...
+        2. Нажмите ...
+        3. Ожидается ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Ожидаемое поведение
+      description: Что должно было произойти вместо этого
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Критерии приёмки
+      description: По каким признакам понять, что баг исправлен
+  - type: markdown
+    attributes:
+      value: |
+        Проверка после исправления: `npm run typecheck`, `npm test`, `npm run e2e`.

@@ -1,0 +1,23 @@
+name: Feature request
+description: Предложить новую возможность для Call Calendar
+title: "feat: "
+labels: ["feature"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Описание
+      description: Что за возможность, для кого и зачем она нужна
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Критерии приёмки
+      description: Как проверить, что возможность реализована
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        Проверка после реализации: `npm run typecheck`, `npm test`, `npm run e2e`.
