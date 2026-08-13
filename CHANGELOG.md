@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/VolgnaGath/ai-for-developers-project-387/compare/call-calendar-v0.4.0...call-calendar-v0.4.1) (2026-08-13)
+
+
+### Reverts
+
+* ci: add opencode github workflows ([#9](https://github.com/VolgnaGath/ai-for-developers-project-387/issues/9)) ([a9fcd71](https://github.com/VolgnaGath/ai-for-developers-project-387/commit/a9fcd71feca6cb0d91f8d1bf6ef61e831354ba21))
+
 ## [0.4.0](https://github.com/VolgnaGath/ai-for-developers-project-387/compare/call-calendar-v0.3.0...call-calendar-v0.4.0) (2026-08-12)
 
 
