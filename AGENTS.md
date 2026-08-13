@@ -53,7 +53,7 @@ Call Calendar — бронирование звонков: владелец пу
 
 ## Работа в GitHub Actions
 
-Запуски агента в GitHub Actions: интерактив по `/oc`-комментариям (`opencode.yml`), автотриаж новых issues (`opencode-triage.yml`), ночная проверка Lighthouse (`opencode-lighthouse.yml`).
+Запуски агента в GitHub Actions: интерактив по `/oc`-комментариям, автотриаж новых issues, ночная проверка Lighthouse.
 
 - Перед любыми правками читай `CONTEXT.md`.
 - Коммиты — Conventional Commits (см. «Коммиты»), ветки — `opencode/…`.
