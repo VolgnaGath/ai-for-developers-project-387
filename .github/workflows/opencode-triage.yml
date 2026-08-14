@@ -8,6 +8,7 @@ jobs:
   triage:
     if: ${{ !endsWith(github.event.issue.user.login, '[bot]') }}
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       issues: write
       contents: read
