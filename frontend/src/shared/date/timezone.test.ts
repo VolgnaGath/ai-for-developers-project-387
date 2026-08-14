@@ -7,6 +7,7 @@ import {
   instantDateKey,
   isInWindow,
   isValidPlainDate,
+  msUntilNextMidnight,
   nowInZone,
   parsePlainDate,
   plainDateKey,
@@ -148,6 +149,33 @@ describe('visibleGridRange', () => {
       from: '2026-07-27',
       to: '2026-09-06',
     });
+  });
+});
+
+describe('msUntilNextMidnight', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-08-06T21:30:00Z'));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('returns the time until midnight in the zone of the given instant', () => {
+    expect(msUntilNextMidnight(nowInZone('Europe/Moscow'))).toBe(
+      24 * 60 * 60 * 1000 - 30 * 60 * 1000,
+    );
+  });
+
+  it('is zero at the start of a day', () => {
+    expect(msUntilNextMidnight(todayInZone('UTC'))).toBe(24 * 60 * 60 * 1000);
+  });
+
+  it('depends on the target timezone, not the browser time', () => {
+    const utc = msUntilNextMidnight(nowInZone('UTC'));
+    const moscow = msUntilNextMidnight(nowInZone('Europe/Moscow'));
+    expect(utc).not.toBe(moscow);
   });
 });
 

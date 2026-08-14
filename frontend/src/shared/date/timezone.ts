@@ -18,6 +18,10 @@ export function todayInZone(timezone: string): Dayjs {
   return nowInZone(timezone).startOf('day');
 }
 
+export function msUntilNextMidnight(now: Dayjs): number {
+  return now.add(1, 'day').startOf('day').valueOf() - now.valueOf();
+}
+
 export function parsePlainDate(value: string, timezone: string): Dayjs {
   return dayjs.tz(value, timezone).startOf('day');
 }

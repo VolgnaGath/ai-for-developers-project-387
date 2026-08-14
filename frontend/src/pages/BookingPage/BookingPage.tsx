@@ -24,10 +24,9 @@ import {
   isValidPlainDate,
   isInWindow,
   parsePlainDate,
-  plainDateKey,
-  todayInZone,
   visibleGridRange,
 } from '../../shared/date/timezone';
+import { useTodayInZone } from '../../shared/date/useTodayInZone';
 import { CalendarPicker } from '../../features/booking/CalendarPicker';
 import { SlotList } from '../../features/booking/SlotList';
 import { BookingForm } from '../../features/booking/BookingForm';
@@ -57,20 +56,34 @@ export default function BookingPage() {
 
   const timezone = config?.timezone;
 
+  const today = useTodayInZone(timezone);
+
   const selectedDate = useMemo(() => {
-    if (!config) return null;
-    const today = plainDateKey(todayInZone(config.timezone));
+    if (!config || !today) return null;
     const param = searchParams.get('date');
     if (!param || !isValidPlainDate(param)) return today;
     const day = parsePlainDate(param, config.timezone);
     if (!isInWindow(day, config.timezone, config.bookingWindowDays)) return today;
     return param;
-  }, [config, searchParams]);
+  }, [config, today, searchParams]);
 
   const [visibleMonth, setVisibleMonth] = useState<string | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [slotError, setSlotError] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!config || !today) return;
+    const param = searchParams.get('date');
+    if (!param || !isValidPlainDate(param)) return;
+    const day = parsePlainDate(param, config.timezone);
+    if (isInWindow(day, config.timezone, config.bookingWindowDays)) return;
+    setSelectedSlot(null);
+    setSlotError(null);
+    const next = new URLSearchParams(searchParams);
+    next.set('date', today);
+    setSearchParams(next, { replace: true });
+  }, [config, today, searchParams, setSearchParams]);
 
   useEffect(() => {
     if (!visibleMonth && selectedDate) {
@@ -154,12 +167,12 @@ export default function BookingPage() {
 
   const handleChangeMonth = (month: string) => {
     setVisibleMonth(month);
-    if (!timezone || !selectedDate) return;
+    if (!timezone || !today || !selectedDate) return;
     const range = visibleGridRange(month, timezone);
     if (selectedDate < range.from || selectedDate > range.to) {
       setSelectedSlot(null);
       const next = new URLSearchParams(searchParams);
-      next.set('date', plainDateKey(todayInZone(timezone)));
+      next.set('date', today);
       setSearchParams(next, { replace: true });
     }
   };
@@ -261,7 +274,7 @@ export default function BookingPage() {
                   timezone={config.timezone}
                   windowDays={config.bookingWindowDays}
                   selectedDate={selectedDate ?? ''}
-                  today={plainDateKey(todayInZone(config.timezone))}
+                  today={today ?? ''}
                   daysWithSlots={daysWithSlots}
                   visibleMonth={visibleMonth ?? selectedDate ?? ''}
                   onChangeMonth={handleChangeMonth}
