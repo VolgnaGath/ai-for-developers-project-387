@@ -50,7 +50,7 @@ jobs:
             https://ai-for-developers-project-387-njkb.onrender.com \
             --output=json \
             --output-path=./lighthouse-report.json \
-            --chrome-flags="--no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --disable-gpu" \
+            --chrome-flags="--headless --no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --disable-gpu" \
             --quiet
         env:
           CHROME_PATH: ${{ env.CHROME_PATH }}
