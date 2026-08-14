@@ -1,0 +1,39 @@
+name: opencode-triage
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  triage:
+    if: ${{ !endsWith(github.event.issue.user.login, '[bot]') }}
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Run OpenCode triage
+        uses: anomalyco/opencode/github@latest
+        env:
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+        with:
+          model: opencode/big-pickle
+          use_github_token: true
+          share: false
+          prompt: |
+            Ты — triage-агент репозитория Call Calendar. Разбери открытый issue.
+            Сначала прочитай CONTEXT.md (глоссарий домена), AGENTS.md и docs/, чтобы говорить языком проекта.
+            Код и .github/workflows/ НЕ менять — только комментарий и метки.
+            Оставь ровно один комментарий с: (1) кратким резюме, (2) затронутыми компонентами
+            (frontend/backend/контракт TypeSpec/docs) со ссылками на файлы, если очевидно,
+            (3) вероятными причинами (баг) или направлением реализации (фича),
+            (4) предложенным следующим шагом.
+            Проставь метки: bug или feature по содержанию (существующая метка из шаблона остаётся, если тип совпадает;
+            если issue размечен неверно — замени) и добавь triage. Другие метки не трогай.
+            Если в issue мало информации — отметь это и предложи уточнить по шаблону.
