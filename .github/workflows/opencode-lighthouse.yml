@@ -24,10 +24,14 @@ jobs:
         with:
           node-version: 24
 
-      - name: Install Chrome
+      - name: Setup Chrome
         run: |
-          npx -y @puppeteer/browsers install chrome@stable --path ./.chrome
-          echo "CHROME_PATH=$(echo $PWD/.chrome/chrome/*/chrome-linux64/chrome)" >> "$GITHUB_ENV"
+          if [ -x /usr/bin/google-chrome ]; then
+            echo "CHROME_PATH=/usr/bin/google-chrome" >> "$GITHUB_ENV"
+          else
+            npx -y @puppeteer/browsers install chrome@stable --path ./.chrome
+            echo "CHROME_PATH=$(echo $PWD/.chrome/chrome/*/chrome-linux64/chrome)" >> "$GITHUB_ENV"
+          fi
 
       - name: Warm up Render container
         run: |
@@ -46,7 +50,7 @@ jobs:
             https://ai-for-developers-project-387-njkb.onrender.com \
             --output=json \
             --output-path=./lighthouse-report.json \
-            --chrome-flags="--no-sandbox" \
+            --chrome-flags="--no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --disable-gpu" \
             --quiet
         env:
           CHROME_PATH: ${{ env.CHROME_PATH }}
