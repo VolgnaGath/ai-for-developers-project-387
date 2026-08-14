@@ -20,7 +20,9 @@ jobs:
       && !contains(github.event.comment.user.login, '[bot]')
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
+      issues: write
+      contents: write
+      pull-requests: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -44,6 +46,8 @@ jobs:
         uses: anomalyco/opencode/github@latest
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           model: opencode/big-pickle
+          use_github_token: true
           share: false
