@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.2](https://github.com/VolgnaGath/ai-for-developers-project-387/compare/call-calendar-v0.4.1...call-calendar-v0.4.2) (2026-08-14)
+
+
+### Bug Fixes
+
+* keep booking window fresh across midnight ([#21](https://github.com/VolgnaGath/ai-for-developers-project-387/issues/21)) ([d33b8fa](https://github.com/VolgnaGath/ai-for-developers-project-387/commit/d33b8fa18ec50adedf474814a5ee2b1e6fd24873))
+
 ## [0.4.1](https://github.com/VolgnaGath/ai-for-developers-project-387/compare/call-calendar-v0.4.0...call-calendar-v0.4.1) (2026-08-13)
 
 
