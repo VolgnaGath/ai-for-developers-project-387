@@ -27,7 +27,7 @@ jobs:
       - name: Install Chrome
         run: |
           npx -y @puppeteer/browsers install chrome@stable --path ./.chrome
-          echo "CHROME_PATH=$PWD/.chrome/chrome-linux64/chrome" >> "$GITHUB_ENV"
+          echo "CHROME_PATH=$(echo $PWD/.chrome/chrome/*/chrome-linux64/chrome)" >> "$GITHUB_ENV"
 
       - name: Warm up Render container
         run: |
