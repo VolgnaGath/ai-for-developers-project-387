@@ -1,0 +1,91 @@
+name: opencode-lighthouse
+
+on:
+  schedule:
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      issues: write
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: Install Chrome
+        run: |
+          npx -y @puppeteer/browsers install chrome@stable --path ./.chrome
+          echo "CHROME_PATH=$PWD/.chrome/chrome-linux64/chrome" >> "$GITHUB_ENV"
+
+      - name: Warm up Render container
+        run: |
+          for i in 1 2 3 4 5; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 120 \
+              https://ai-for-developers-project-387-njkb.onrender.com || true)
+            echo "warm-up attempt $i: HTTP $code"
+            [ "$code" = "200" ] && break
+            sleep 15
+          done
+          sleep 30
+
+      - name: Run Lighthouse
+        run: |
+          npx -y lighthouse@12 \
+            https://ai-for-developers-project-387-njkb.onrender.com \
+            --output=json \
+            --output-path=./lighthouse-report.json \
+            --chrome-flags="--no-sandbox" \
+            --quiet
+        env:
+          CHROME_PATH: ${{ env.CHROME_PATH }}
+
+      - name: Upload Lighthouse report artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-report
+          path: lighthouse-report.json
+          if-no-files-found: warn
+
+      - name: Run OpenCode analysis
+        if: hashFiles('lighthouse-report.json') != ''
+        continue-on-error: true
+        uses: anomalyco/opencode/github@latest
+        env:
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          model: opencode/big-pickle
+          use_github_token: true
+          share: false
+          prompt: |
+            Ты — ночной аналитик производительности Call Calendar. Сначала прочитай CONTEXT.md (глоссарий домена) и AGENTS.md.
+            Код и .github/workflows/ НЕ менять, в main не пушить, PR не открывать.
+            В рабочей директории лежат свежий lighthouse-report.json и docs/performance-baseline.md (если человек его завёл).
+
+            Правила:
+            1. Если lighthouse-report.json отсутствует или не читается — issue не создавать, только описать ситуацию и завершиться.
+            2. Прочитай docs/performance-baseline.md. Если файла нет или в таблице нет числовых значений — baseline не зафиксирован: issue не создавать, только сообщить об этом и завершиться.
+            3. Сравни баллы категорий отчёта (performance, accessibility, seo, best-practices — первичный сигнал) с baseline.
+               Регрессия по каждой категории: относительное падение более чем на 10% от baseline.
+            4. LCP (audits['largest-contentful-paint'].numericValue), CLS (audits['cumulative-layout-shift'].numericValue),
+               INP (audits['interaction-to-next-paint'].numericValue) — вторичный сигнал: только для аргументации в issue,
+               сами по себе issue не создают (чувствительны к холодному старту Render).
+            5. Регрессии нет — ничего не создавать и не комментировать, завершиться.
+            6. Регрессия есть — создать один issue по структуре шаблона .github/ISSUE_TEMPLATE/bug_report.yml
+               (Описание / Шаги воспроизведения / Ожидаемое поведение / Критерии приёмки):
+               заголовок вида "perf: {категория} упала с X до Y", таблица метрик до/после (баллы категорий + LCP/CLS/INP),
+               рекомендации, метка bug. Другие метки (performance и т.п.) не проставлять.
+               Ссылка на прогон с артефактом: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
