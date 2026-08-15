@@ -86,11 +86,11 @@
 - [x] `opencode.yml`: `share: false`, concurrency-guard, ограничение триггера коллабораторами + бот-фильтр, setup-node (Node 24) + `npm ci` перед шагом OpenCode. **Отклонение**: после первого прогона переведён на `use_github_token: true` (PR #19) из-за upstream-бага anomalyco/opencode#37823 (новый immutable OIDC `sub` ломает обмен App-токеном на репозиториях, созданных после 2026-07-15; `Failed to parse JSON` → `p.rest`). Комментарии приходят от `github-actions[bot]`, а не от App; при фиксе upstream — вернуть App-аутентификацию.
 - [x] `opencode-triage.yml` и `opencode-lighthouse.yml`: `use_github_token: true` с минимальными permissions.
 - [x] `opencode-lighthouse.yml`: warm-up, artifact всегда, `continue-on-error: true`.
-- [x] Все три workflow созданы и замержены в `main`; Actions запускаются (opencode и triage — зелёные прогоны; lighthouse — ещё не запускался).
+- [x] Все три workflow созданы и замержены в `main`; Actions запускаются (opencode, triage и lighthouse — зелёные прогоны).
 - [x] Артефакт 1: ответ агента в issue (`/oc explain`) — разбор B1 в issue #7.
 - [x] Артефакт 2: автотриаж нового issue — issue #17 (комментарий + метки `bug`/`triage`).
 - [ ] Артефакт 3: PR агента по задаче из §5 (B1) + доработка после ревью-комментария `/oc`, CI зелёный.
-- [ ] Артефакт 4: ручной (`workflow_dispatch`) прогон Lighthouse → JSON-артефакт, `docs/performance-baseline.md` создан и закоммичен PR-ом человека, issue-регрессия при необходимости.
+- [x] Артефакт 4: ручной (`workflow_dispatch`) прогон Lighthouse (run 31839420731) → JSON-артефакт, `docs/performance-baseline.md` создан и закоммичен PR-ом человека (PR #27), issue-регрессия не создавалась (baseline отсутствовал на момент прогона — правило §4.3). Побочно: найдены и исправлены три бага workflow (PR #24 `CHROME_PATH`, #25 системный Chrome, #26 `--headless`), закрыто issue #23.
 - [x] Проверено, что падение Render MCP без `RENDER_API_TOKEN` в runner'е некритично (зелёный интерактивный прогон без упоминаний MCP в логе).
 - [x] `hexlet-check.yml` и `ci.yml` не изменены.
 
