@@ -118,6 +118,13 @@ export default function AdminBookingsPage() {
     setSearchParams(next);
   };
 
+  const handleReset = () => {
+    const next = new URLSearchParams(searchParams);
+    next.delete('from');
+    next.delete('to');
+    setSearchParams(next);
+  };
+
   const isFiltered = urlFrom !== null || urlTo !== null;
 
   return (
@@ -149,6 +156,9 @@ export default function AdminBookingsPage() {
           clearable
           miw={180}
         />
+        <Button variant="default" onClick={handleReset} disabled={!isFiltered}>
+          Сбросить
+        </Button>
       </Group>
 
       {sortedBookings.length === 0 ? (

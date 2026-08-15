@@ -126,5 +126,9 @@ test.describe('Административный список встреч', () =
 
     await page.getByLabel('До').fill('');
     await expect(page.getByText('Иван Петров')).toBeVisible();
+
+    await page.getByRole('button', { name: 'Сбросить' }).click();
+    await expect(page).not.toHaveURL(/[?&](from|to)=/);
+    await expect(page.getByText('Иван Петров')).toBeVisible();
   });
 });
