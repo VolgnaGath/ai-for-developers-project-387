@@ -1,5 +1,6 @@
 import type { Page } from '@playwright/test';
 import { test, expect } from './fixtures';
+import { todayInZone } from '../src/shared/date/timezone';
 
 function cardByTitle(page: Page, title: string) {
   return page.getByTestId('event-type-card').filter({ has: page.getByText(title, { exact: true }) });
@@ -102,5 +103,28 @@ test.describe('Административный список встреч', () =
     await expect(page.getByText('Иван Петров')).toBeVisible();
     await expect(page.getByText('Консультация')).toBeVisible();
     await expect(page.getByText('30 минут')).toBeVisible();
+  });
+
+  test('фильтрует встречи по диапазону дат «от/до»', async ({ page }) => {
+    const today = todayInZone('Europe/Moscow');
+    const bookingDay = today.add(1, 'day').format('YYYY-MM-DD');
+    const future = today.add(7, 'day').format('YYYY-MM-DD');
+    const past = today.subtract(7, 'day').format('YYYY-MM-DD');
+
+    await page.goto('/admin/bookings');
+    await expect(page.getByText('Иван Петров')).toBeVisible();
+
+    await page.getByLabel('От').fill(future);
+    await expect(page).toHaveURL(new RegExp(`from=${future}`));
+    await expect(page.getByText('Иван Петров')).toHaveCount(0);
+
+    await page.getByLabel('От').fill(bookingDay);
+    await expect(page.getByText('Иван Петров')).toBeVisible();
+
+    await page.getByLabel('До').fill(past);
+    await expect(page.getByText('Иван Петров')).toHaveCount(0);
+
+    await page.getByLabel('До').fill('');
+    await expect(page.getByText('Иван Петров')).toBeVisible();
   });
 });
