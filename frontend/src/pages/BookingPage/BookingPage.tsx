@@ -21,6 +21,7 @@ import type { BookingInput, PublicConfig, Slot } from '../../shared/api/bookings
 import { viewEventType } from '../../shared/api/eventTypes';
 import { isApiError, NetworkError } from '../../shared/api/errors';
 import {
+  configDayOfWeek,
   isValidPlainDate,
   isInWindow,
   parsePlainDate,
@@ -33,6 +34,7 @@ import { BookingForm } from '../../features/booking/BookingForm';
 import type { BookingFormValues } from '../../features/booking/BookingForm';
 import { validateBookingForm } from '../../features/booking/bookingValidation';
 import { groupSlotsByDay } from '../../features/booking/slots';
+import { useSlotsRefresh } from '../../features/booking/useSlotsRefresh';
 import styles from './BookingPage.module.css';
 
 export default function BookingPage() {
@@ -105,6 +107,8 @@ export default function BookingPage() {
     refetchOnWindowFocus: true,
   });
 
+  useSlotsRefresh(eventTypeId, slotsQuery.data, timezone);
+
   const slotsByDay = useMemo(
     () => (timezone && slotsQuery.data ? groupSlotsByDay(slotsQuery.data, timezone) : new Map<string, Slot[]>()),
     [slotsQuery.data, timezone],
@@ -115,6 +119,13 @@ export default function BookingPage() {
     () => (selectedDate ? (slotsByDay.get(selectedDate) ?? []) : []),
     [selectedDate, slotsByDay],
   );
+
+  const isWorkingDay = useMemo(() => {
+    if (!config || !selectedDate) return false;
+    return config.workingHours.days.includes(
+      configDayOfWeek(parsePlainDate(selectedDate, config.timezone)),
+    );
+  }, [config, selectedDate]);
 
   const slotsLoading = !eventType || !config || !gridRange || slotsQuery.isPending;
 
@@ -317,6 +328,8 @@ export default function BookingPage() {
                 <SlotList
                   slots={daySlots}
                   timezone={config?.timezone ?? 'UTC'}
+                  isToday={Boolean(today && selectedDate && selectedDate === today)}
+                  isWorkingDay={isWorkingDay}
                   isPending={slotsLoading}
                   hasError={slotsQuery.isError}
                   onSelectSlot={handleSelectSlot}

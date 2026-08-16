@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 import type { PublicConfig, Slot } from '../../shared/api/bookings';
-import { parsePlainDate, plainDateKey } from '../../shared/date/timezone';
+import { configDayOfWeek, parsePlainDate, plainDateKey } from '../../shared/date/timezone';
 
 export interface BusyInterval {
   start: string;
@@ -35,11 +35,6 @@ export interface CandidateQuery {
 function toMinutes(time: string): number {
   const [hours, minutes] = time.split(':').map(Number);
   return hours * 60 + minutes;
-}
-
-/** Номер дня недели по конфигу (1 = Пн … 7 = Вс) из dayjs (0 = Вс … 6 = Сб). */
-function configWeekday(day: Dayjs): number {
-  return day.day() === 0 ? 7 : day.day();
 }
 
 function overlaps(
@@ -91,7 +86,7 @@ export function listSlots(query: ListSlotsQuery): ListSlotsResult {
       day.isBefore(endDate, 'day') || day.isSame(endDate, 'day');
       day = day.add(1, 'day')
     ) {
-      if (!config.workingHours.days.includes(configWeekday(day))) continue;
+      if (!config.workingHours.days.includes(configDayOfWeek(day))) continue;
 
     for (let minute = gridStart; minute + query.durationMinutes <= gridEnd; minute += step) {
       const start = day.hour(Math.floor(minute / 60)).minute(minute % 60).second(0).millisecond(0);
@@ -122,7 +117,7 @@ export function isBaseCandidateStart(query: CandidateQuery): boolean {
   const local = dayjs(start).tz(config.timezone);
   if (local.second() !== 0 || local.millisecond() !== 0) return false;
 
-  if (!config.workingHours.days.includes(configWeekday(local))) return false;
+  if (!config.workingHours.days.includes(configDayOfWeek(local))) return false;
 
   const minute = local.hour() * 60 + local.minute();
   const gridStart = toMinutes(config.workingHours.start);

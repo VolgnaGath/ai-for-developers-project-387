@@ -79,8 +79,56 @@ test.describe('Гостевое бронирование', () => {
     await network.use(
       http.get('/event-types/:eventTypeId/slots', () => HttpResponse.json([])),
     );
-    await page.goto('/book/event-type-consultation');
+    await page.goto(`/book/event-type-consultation?date=${nextWorkingDay().format('YYYY-MM-DD')}`);
     await expect(page.getByText('На этот день нет свободных слотов.')).toBeVisible();
+  });
+
+  test('сообщает о завершении слотов на сегодня в рабочий день', async ({ page, network }) => {
+    await network.use(
+      http.get('/event-types/:eventTypeId/slots', () => HttpResponse.json([])),
+    );
+    await page.clock.install({ time: new Date('2026-08-10T06:00:00Z') });
+    await page.goto('/book/event-type-consultation?date=2026-08-10');
+    await expect(
+      page.getByText('Свободные слоты на сегодня закончились. Выберите другой день.'),
+    ).toBeVisible();
+  });
+
+  test('в нерабочий день сегодня показывает нейтральное «нет свободных слотов»', async ({ page, network }) => {
+    await network.use(
+      http.get('/event-types/:eventTypeId/slots', () => HttpResponse.json([])),
+    );
+    await page.clock.install({ time: new Date('2026-08-08T06:00:00Z') });
+    await page.goto('/book/event-type-consultation?date=2026-08-08');
+    await expect(page.getByText('На этот день нет свободных слотов.')).toBeVisible();
+  });
+
+  test('слоты, начавшиеся при открытой вкладке, исчезают без действий гостя', async ({ page, network }) => {
+    await page.clock.install({ time: new Date('2026-08-10T06:00:00Z') });
+
+    let calls = 0;
+    await network.use(
+      http.get('/event-types/:eventTypeId/slots', () => {
+        calls += 1;
+        if (calls === 1) {
+          return HttpResponse.json([
+            { start: '2026-08-10T07:00:00Z', end: '2026-08-10T07:30:00Z' },
+            { start: '2026-08-10T07:15:00Z', end: '2026-08-10T07:45:00Z' },
+          ]);
+        }
+        return HttpResponse.json([
+          { start: '2026-08-10T07:15:00Z', end: '2026-08-10T07:45:00Z' },
+        ]);
+      }),
+    );
+
+    await page.goto('/book/event-type-consultation?date=2026-08-10');
+    await expect(page.getByRole('button', { name: '10:00–10:30' })).toBeVisible();
+    await expect(page.getByRole('button', { name: '10:15–10:45' })).toBeVisible();
+
+    await page.clock.fastForward(60 * 60 * 1000);
+    await expect(page.getByRole('button', { name: '10:00–10:30' })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: '10:15–10:45' })).toBeVisible();
   });
 
   test('при 409 сохраняет форму, сбрасывает слот и обновляет список слотов', async ({ page }) => {

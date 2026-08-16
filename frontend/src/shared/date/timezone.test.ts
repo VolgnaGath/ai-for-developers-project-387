@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   canGoForward,
+  configDayOfWeek,
   formatDateTime,
   formatMonthLabel,
   formatTime,
@@ -49,6 +50,14 @@ describe('parsePlainDate / plainDateKey', () => {
   it('returns the YYYY-MM-DD key', () => {
     const day = parsePlainDate('2026-08-06', 'UTC');
     expect(plainDateKey(day)).toBe('2026-08-06');
+  });
+});
+
+describe('configDayOfWeek', () => {
+  it('maps dayjs weekdays to config numbering (1 = Пн … 7 = Вс)', () => {
+    expect(configDayOfWeek(parsePlainDate('2026-08-10', 'UTC'))).toBe(1);
+    expect(configDayOfWeek(parsePlainDate('2026-08-08', 'UTC'))).toBe(6);
+    expect(configDayOfWeek(parsePlainDate('2026-08-09', 'UTC'))).toBe(7);
   });
 });
 
