@@ -21,6 +21,7 @@ import type { BookingInput, PublicConfig, Slot } from '../../shared/api/bookings
 import { viewEventType } from '../../shared/api/eventTypes';
 import { isApiError, NetworkError } from '../../shared/api/errors';
 import {
+  configDayOfWeek,
   isValidPlainDate,
   isInWindow,
   parsePlainDate,
@@ -118,6 +119,13 @@ export default function BookingPage() {
     () => (selectedDate ? (slotsByDay.get(selectedDate) ?? []) : []),
     [selectedDate, slotsByDay],
   );
+
+  const isWorkingDay = useMemo(() => {
+    if (!config || !selectedDate) return false;
+    return config.workingHours.days.includes(
+      configDayOfWeek(parsePlainDate(selectedDate, config.timezone)),
+    );
+  }, [config, selectedDate]);
 
   const slotsLoading = !eventType || !config || !gridRange || slotsQuery.isPending;
 
@@ -321,6 +329,7 @@ export default function BookingPage() {
                   slots={daySlots}
                   timezone={config?.timezone ?? 'UTC'}
                   isToday={Boolean(today && selectedDate && selectedDate === today)}
+                  isWorkingDay={isWorkingDay}
                   isPending={slotsLoading}
                   hasError={slotsQuery.isError}
                   onSelectSlot={handleSelectSlot}

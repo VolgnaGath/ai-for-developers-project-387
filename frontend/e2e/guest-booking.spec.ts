@@ -83,15 +83,24 @@ test.describe('Гостевое бронирование', () => {
     await expect(page.getByText('На этот день нет свободных слотов.')).toBeVisible();
   });
 
-  test('сообщает о завершении слотов на сегодня', async ({ page, network }) => {
+  test('сообщает о завершении слотов на сегодня в рабочий день', async ({ page, network }) => {
     await network.use(
       http.get('/event-types/:eventTypeId/slots', () => HttpResponse.json([])),
     );
-    const today = todayInZone('Europe/Moscow').format('YYYY-MM-DD');
-    await page.goto(`/book/event-type-consultation?date=${today}`);
+    await page.clock.install({ time: new Date('2026-08-10T06:00:00Z') });
+    await page.goto('/book/event-type-consultation?date=2026-08-10');
     await expect(
       page.getByText('Свободные слоты на сегодня закончились. Выберите другой день.'),
     ).toBeVisible();
+  });
+
+  test('в нерабочий день сегодня показывает нейтральное «нет свободных слотов»', async ({ page, network }) => {
+    await network.use(
+      http.get('/event-types/:eventTypeId/slots', () => HttpResponse.json([])),
+    );
+    await page.clock.install({ time: new Date('2026-08-08T06:00:00Z') });
+    await page.goto('/book/event-type-consultation?date=2026-08-08');
+    await expect(page.getByText('На этот день нет свободных слотов.')).toBeVisible();
   });
 
   test('слоты, начавшиеся при открытой вкладке, исчезают без действий гостя', async ({ page, network }) => {

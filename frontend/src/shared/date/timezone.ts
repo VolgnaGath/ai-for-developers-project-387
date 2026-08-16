@@ -30,6 +30,11 @@ export function plainDateKey(day: Dayjs): string {
   return day.format('YYYY-MM-DD');
 }
 
+/** Номер дня недели по конфигу (1 = Пн … 7 = Вс) из dayjs (0 = Вс … 6 = Сб). */
+export function configDayOfWeek(day: Dayjs): number {
+  return day.day() === 0 ? 7 : day.day();
+}
+
 export function instantDateKey(iso: string, timezone: string): string {
   return dayjs(iso).tz(timezone).startOf('day').format('YYYY-MM-DD');
 }

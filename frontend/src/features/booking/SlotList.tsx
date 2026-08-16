@@ -7,6 +7,7 @@ interface SlotListProps {
   slots: Slot[];
   timezone: string;
   isToday: boolean;
+  isWorkingDay: boolean;
   isPending: boolean;
   hasError: boolean;
   onSelectSlot: (slot: Slot) => void;
@@ -17,6 +18,7 @@ export function SlotList({
   slots,
   timezone,
   isToday,
+  isWorkingDay,
   isPending,
   hasError,
   onSelectSlot,
@@ -45,7 +47,7 @@ export function SlotList({
 
       {!isPending && !hasError && slots.length === 0 ? (
         <Text c="dimmed" className={styles.empty}>
-          {isToday
+          {isToday && isWorkingDay
             ? 'Свободные слоты на сегодня закончились. Выберите другой день.'
             : 'На этот день нет свободных слотов.'}
         </Text>
