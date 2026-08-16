@@ -33,6 +33,7 @@ import { BookingForm } from '../../features/booking/BookingForm';
 import type { BookingFormValues } from '../../features/booking/BookingForm';
 import { validateBookingForm } from '../../features/booking/bookingValidation';
 import { groupSlotsByDay } from '../../features/booking/slots';
+import { useSlotsRefresh } from '../../features/booking/useSlotsRefresh';
 import styles from './BookingPage.module.css';
 
 export default function BookingPage() {
@@ -104,6 +105,8 @@ export default function BookingPage() {
     refetchOnMount: true,
     refetchOnWindowFocus: true,
   });
+
+  useSlotsRefresh(eventTypeId, slotsQuery.data, timezone);
 
   const slotsByDay = useMemo(
     () => (timezone && slotsQuery.data ? groupSlotsByDay(slotsQuery.data, timezone) : new Map<string, Slot[]>()),
@@ -317,6 +320,7 @@ export default function BookingPage() {
                 <SlotList
                   slots={daySlots}
                   timezone={config?.timezone ?? 'UTC'}
+                  isToday={Boolean(today && selectedDate && selectedDate === today)}
                   isPending={slotsLoading}
                   hasError={slotsQuery.isError}
                   onSelectSlot={handleSelectSlot}

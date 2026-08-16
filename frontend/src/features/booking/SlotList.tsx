@@ -6,6 +6,7 @@ import styles from './SlotList.module.css';
 interface SlotListProps {
   slots: Slot[];
   timezone: string;
+  isToday: boolean;
   isPending: boolean;
   hasError: boolean;
   onSelectSlot: (slot: Slot) => void;
@@ -15,6 +16,7 @@ interface SlotListProps {
 export function SlotList({
   slots,
   timezone,
+  isToday,
   isPending,
   hasError,
   onSelectSlot,
@@ -43,7 +45,9 @@ export function SlotList({
 
       {!isPending && !hasError && slots.length === 0 ? (
         <Text c="dimmed" className={styles.empty}>
-          На этот день нет свободных слотов.
+          {isToday
+            ? 'Свободные слоты на сегодня закончились. Выберите другой день.'
+            : 'На этот день нет свободных слотов.'}
         </Text>
       ) : null}
 
