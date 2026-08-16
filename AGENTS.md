@@ -5,9 +5,8 @@ Call Calendar — бронирование звонков: владелец пу
 ## Структура
 
 - **API-контракт** — TypeSpec: `main.tsp` → `npm run generate` → `tsp-output/schema/openapi.yaml` (закоммичен). После правок `main.tsp` перегенерируй и закоммить и сгенерированный файл.
-- **Backend** — npm workspace `backend/` (Express 5, TypeScript/ESM, router и типы генерятся из OpenAPI в `backend/src/generated/`). Структура и план: `plans/BACKEND_PLAN.md`.
-- **Фронтенд** — npm workspace `frontend/` (Vite + React 19 + Mantine 8 + React Router + TanStack Query). Вход: `frontend/src/main.tsx`; маршруты: `frontend/src/app/router.tsx`; страницы: `frontend/src/pages/`; API-клиент и общие модули: `frontend/src/shared/`.
-- `plans/FRONTEND_PLAN.md` — план и принятые решения фронта; `docs/adr/` — ADR (в т.ч. вся календарная логика живёт в `PublicConfig.timezone`).
+- **Backend** — npm workspace `backend/` (Express 5, TypeScript/ESM, router и типы генерятся из OpenAPI в `backend/src/generated/`).
+- **Фронтенд** — npm workspace `frontend/` (Vite + React 19 + Mantine 8 + React Router + TanStack Query). Вход: `frontend/src/main.tsx`; маршруты: `frontend/src/app/router.tsx`; страницы: `frontend/src/pages/`; API-клиент и общие модули: `frontend/src/shared/`; `docs/adr/` — ADR (в т.ч. вся календарная логика живёт в `PublicConfig.timezone`).
 
 ## Команды (из корня)
 
