@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.5.0](https://github.com/VolgnaGath/ai-for-developers-project-387/compare/call-calendar-v0.4.2...call-calendar-v0.5.0) (2026-08-16)
+
+
+### Features
+
+* add date range filter to admin bookings list ([#32](https://github.com/VolgnaGath/ai-for-developers-project-387/issues/32)) ([468f5d6](https://github.com/VolgnaGath/ai-for-developers-project-387/commit/468f5d63e8f3baf484e4cd17f9f2719664794311))
+
+
+### Bug Fixes
+
+* revalidate slots on scheduled changes ([#37](https://github.com/VolgnaGath/ai-for-developers-project-387/issues/37)) ([ee6ed80](https://github.com/VolgnaGath/ai-for-developers-project-387/commit/ee6ed80e7acb9420f9153fd4b85758558b4ce4b1))
+
 ## [0.4.2](https://github.com/VolgnaGath/ai-for-developers-project-387/compare/call-calendar-v0.4.1...call-calendar-v0.4.2) (2026-08-14)
 
 
