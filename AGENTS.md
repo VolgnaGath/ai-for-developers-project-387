@@ -5,8 +5,11 @@ Call Calendar — бронирование звонков: владелец пу
 ## Структура
 
 - **API-контракт** — TypeSpec: `main.tsp` → `npm run generate` → `tsp-output/schema/openapi.yaml` (закоммичен). После правок `main.tsp` перегенерируй и закоммить и сгенерированный файл.
-- **Backend** — npm workspace `backend/` (Express 5, TypeScript/ESM, router и типы генерятся из OpenAPI в `backend/src/generated/`).
-- **Фронтенд** — npm workspace `frontend/` (Vite + React 19 + Mantine 8 + React Router + TanStack Query). Вход: `frontend/src/main.tsx`; маршруты: `frontend/src/app/router.tsx`; страницы: `frontend/src/pages/`; API-клиент и общие модули: `frontend/src/shared/`; `docs/adr/` — ADR (в т.ч. вся календарная логика живёт в `PublicConfig.timezone`).
+- **Backend** — npm workspace `backend/` (Express 5, TypeScript/ESM, router и типы генерятся из OpenAPI в `backend/src/generated/`). Хранилище in-memory (`store.ts`), все данные теряются при перезапуске. Стартует с двумя предзаполненными типами событий: `evt_consultation` (30 мин) и `evt_onboarding` (15 мин). Ключевые файлы: `config.ts` (хардкод `PublicConfig`: Europe/Moscow, Пн-Пт 09:00-18:00, шаг 15 мин, окно 14 дней), `calendar.ts` (генерация слотов через Temporal API), `handlers.ts` (обработчики маршрутов).
+- **Фронтенд** — npm workspace `frontend/` (Vite + React 19 + Mantine 8 + React Router + TanStack Query). Вход: `frontend/src/main.tsx`; маршруты: `frontend/src/app/router.tsx`; страницы: `frontend/src/pages/`; фичи: `frontend/src/features/` (booking, event-types); API-клиент и общие модули: `frontend/src/shared/`.
+- **Документация** — `CONTEXT.md` (глоссарий доменных терминов); `docs/adr/` — ADR (в т.ч. вся календарная логика живёт в `PublicConfig.timezone`); `docs/TESTING.md` — стратегия тестирования и пользовательские сценарии; `plans/` — планы разработки.
+- **Деплой** — `Dockerfile` (multi-stage: сборка frontend + backend, runtime — Node 24 с нативной поддержкой TS). Деплой на Render.
+- **Opencode** — `opencode.json` — MCP-плагин Render для деплоя; `.opencode/` — плагин `@opencode-ai/plugin`.
 
 ## Команды (из корня)
 
@@ -23,12 +26,13 @@ Call Calendar — бронирование звонков: владелец пу
 
 ## Готовые ловушки
 
-- Адрес API задаётся только через `VITE_API_BASE_URL` (`frontend/.env.example`); Vite-прокси нет — прод-сборка работает с отдельно запущенным backend.
+- Адрес API задаётся только через `VITE_API_BASE_URL` (`frontend/.env.example`); Vite-прокси нет — прод-сборка работает с отдельно запущенным backend. Backend принимает env: `PORT` (по умолчанию 4010), `HOST` (127.0.0.1), `FRONTEND_ORIGIN` (http://localhost:5173), `FRONTEND_DIST` (опционально, путь к собранным статикам frontend для SPA-fallback).
 - Мок-сервер Prism (`npm run api:mock`, порт 4010) работает на примерах из `main.tsp` (`@example`/`@opExample`). Это ограничение Prism: примеры слотов статичны и со временем выходят из окна бронирования; stateful/негативные сценарии покрыты MSW в e2e (`frontend/src/test/mocks/handlers.ts`). Новые примеры добавляй в `main.tsp` и перегенерируй OpenAPI.
 - **Нет lint.** Тесты: Vitest (юниты) и Playwright+MSW (e2e). Проверка после правок: `npm run typecheck` + `npm run check`; для фронта — ещё `npm test` и `npm run e2e`.
 - Не создавай ручные копии типов `EventType`/`Booking`/`Slot` — они генерятся из OpenAPI и ре-экспортируются из `shared/api`.
 - `.github/workflows/hexlet-check.yml` — системный CI Hexlet, не редактируй его и README-бейдж; тесты Hexlet идут на каждый push. Отдельный CI `.github/workflows/ci.yml` (Node.js 24) проверяет TypeSpec, синхронность generated-файлов, typecheck, unit/integration-тесты, прод-сборку и Playwright (e2e + real-backend smoke). `.github/workflows/release.yml` — release-please: на push в `main` открывает или обновляет release-PR с changelog и предложенной версией (только при коммитах `feat`/`fix`/`deps`).
 - Пользовательские сценарии и уровни тестов зафиксированы в `docs/TESTING.md`.
+- Админка (`/admin/*`) доступна без аутентификации — осознанное решение для MVP.
 
 ## Рабочий процесс
 
