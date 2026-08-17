@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/VolgnaGath/ai-for-developers-project-387/compare/call-calendar-v0.5.0...call-calendar-v0.5.1) (2026-08-17)
+
+
+### Bug Fixes
+
+* sync package-lock.json and add local setup to README ([#40](https://github.com/VolgnaGath/ai-for-developers-project-387/issues/40)) ([9684751](https://github.com/VolgnaGath/ai-for-developers-project-387/commit/96847511e2e79779e98b13928e9c8a9c290aca82))
+
 ## [0.5.0](https://github.com/VolgnaGath/ai-for-developers-project-387/compare/call-calendar-v0.4.2...call-calendar-v0.5.0) (2026-08-16)
 
 
